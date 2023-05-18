@@ -1,11 +1,28 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router'
+import { updateUser } from '../redux/userSlice'
+
 
 const Update = () => {
-    const [updateName, setUpdateName] = useState('')
-    const [updateEmail, setUpdateEmail] = useState('')
+    const {id} = useParams()
+    const users = useSelector((state)=>state.users)
+    const existingUsers = users.filter(user=>user.id == id)
+    const {name,email} = existingUsers[0]
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const [updateName, setUpdateName] = useState(name)
+    const [updateEmail, setUpdateEmail] = useState(email)
 
     const handleUpdate = (e) => {
-        e.preventDefault
+        e.preventDefault();
+        dispatch(updateUser({
+            id: id,
+            name: updateName,
+            email: updateEmail,
+        }))
+        navigate('/')
     }
 
   return (
@@ -20,7 +37,7 @@ const Update = () => {
             className="form-control"
             placeholder="Enter your updated name"
             value={updateName}
-            onchange={(e) => setUpdateName(e.target.value)}
+            onChange={(e) => setUpdateName(e.target.value)}
           />
         </div>
         <div>
@@ -30,7 +47,7 @@ const Update = () => {
             className="form-control"
             placeholder="Enter your updated email"
             value={updateEmail}
-            onchange={(e) => setUpdateEmail(e.target.value)}
+            onChange={(e) => setUpdateEmail(e.target.value)}
           />
         </div>
         <button className="btn btn-primary w-100 my-3" type="submit">
